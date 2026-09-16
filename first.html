@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muscle Magic</title>
+</head>
+
+<body>
+
+    <h1>Muscle Magic</h1>
+
+    <div>
+        <form id="customerForm">
+
+            <label for="name">Name</label>
+            <input type="text" id="name" required>
+            <br><br>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" required>
+            <br><br>
+
+            <label for="age">Age</label>
+            <input type="number" id="age" required>
+            <br><br>
+
+            <label for="height">Height (in cm)</label>
+            <input type="number" id="height" required>
+            <br><br>
+
+            <label for="weight">Weight (in kg)</label>
+            <input type="number" id="weight" required>
+            <br><br>
+
+            <button type="submit">Submit</button>
+            <button type="button" id="clearBtn">Clear</button>
+
+        </form>
+    </div>
+
+    <br>
+
+    <div id="output">
+        <table border="1" width="100%">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Height</th>
+                    <th>Weight</th>
+                </tr>
+            </thead>
+
+            <tbody id="customerTable">
+            </tbody>
+        </table>
+    </div>
+
+
+    <script>
+        // Global array to store customer objects
+        let customers = [];
+
+        // Get form and table elements
+        const form = document.getElementById("customerForm");
+        const tableBody = document.getElementById("customerTable");
+        const clearBtn = document.getElementById("clearBtn");
+
+
+        // Submit event
+        form.addEventListener("submit", function(event) {
+
+            // Prevent page refresh
+            event.preventDefault();
+
+            // Create customer object
+            const customer = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                age: document.getElementById("age").value,
+                height: document.getElementById("height").value,
+                weight: document.getElementById("weight").value
+            };
+
+            // Store object in global array
+            customers.push(customer);
+
+            // Display customers
+            displayCustomers();
+
+            // Clear input fields
+            form.reset();
+        });
+
+
+        // Function to display customers
+        function displayCustomers() {
+
+            // Clear existing table rows
+            tableBody.innerHTML = "";
+
+            // Loop through customers array
+            customers.forEach(function(customer) {
+
+                // Create table row
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${customer.name}</td>
+                    <td>${customer.age}</td>
+                    <td>${customer.height}</td>
+                    <td>${customer.weight}</td>
+                `;
+
+                // Add row to table
+                tableBody.appendChild(row);
+            });
+        }
+
+
+        // Clear button
+        clearBtn.addEventListener("click", function() {
+            form.reset();
+        });
+    </script>
+
+</body>
+</html>
