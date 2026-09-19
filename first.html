@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Credit Card Report</title>
+    <title>Credit Card Details</title>
+
     <style>
         table {
             border-collapse: collapse;
@@ -39,37 +40,47 @@
         // Create AJAX request
         let xhr = new XMLHttpRequest();
 
+        // Open GET request
         xhr.open(
             "GET",
             "https://webapps.tekstac.com/WebAPI/CreditCardsXMLServlet",
             true
         );
 
+        // Handle response
         xhr.onreadystatechange = function () {
 
-            // Check ready state and status
             if (xhr.readyState === 4 && xhr.status === 200) {
 
-                // Parse XML response
+                // Get XML response
                 let xml = xhr.responseXML;
 
-                // Get all credit card elements
+                // Get all CreditCard elements
                 let cardList = xml.getElementsByTagName("CreditCard");
 
+                // Extract each credit card
                 for (let i = 0; i < cardList.length; i++) {
+
                     let card = cardList[i];
 
-                    let obj = {
-                        cardHolderName: card.getElementsByTagName("CardHolderName")[0].textContent,
-                        cardType: card.getElementsByTagName("CardType")[0].textContent,
-                        cardLimit: card.getElementsByTagName("CardLimit")[0].textContent,
-                        expiryDate: card.getElementsByTagName("ExpiryDate")[0].textContent
+                    let cardObject = {
+                        cardHolderName:
+                            card.getElementsByTagName("CardHolderName")[0].textContent,
+
+                        cardType:
+                            card.getElementsByTagName("CardType")[0].textContent,
+
+                        cardLimit:
+                            card.getElementsByTagName("CardLimit")[0].textContent,
+
+                        expiryDate:
+                            card.getElementsByTagName("ExpiryDate")[0].textContent
                     };
 
-                    cards.push(obj);
+                    cards.push(cardObject);
                 }
 
-                // Check complete dataset
+                // Check whether all 16 records are retrieved
                 if (cards.length === 16) {
                     document.getElementById("message").innerHTML =
                         "Data retrieved successfully.";
@@ -80,31 +91,37 @@
             }
         };
 
+        // Send AJAX request
         xhr.send();
 
 
+        // Function to generate table
         function generateTable() {
 
             let table = document.createElement("table");
 
-            // Create table header
-            let header = table.insertRow();
+            // Create header row
+            let headerRow = table.insertRow();
 
             let headers = [
-                "Card Name",
+                "Card Holder Name",
                 "Card Type",
-                "Limit",
+                "Card Limit",
                 "Expiry Date"
             ];
 
-            headers.forEach(function (heading) {
-                let th = document.createElement("th");
-                th.textContent = heading;
-                header.appendChild(th);
-            });
+            for (let i = 0; i < headers.length; i++) {
 
-            // Add data rows
-            cards.forEach(function (card) {
+                let th = document.createElement("th");
+
+                th.textContent = headers[i];
+
+                headerRow.appendChild(th);
+            }
+
+
+            // Create rows for all cards
+            for (let i = 0; i < cards.length; i++) {
 
                 let row = table.insertRow();
 
@@ -113,15 +130,21 @@
                 let cell3 = row.insertCell();
                 let cell4 = row.insertCell();
 
-                cell1.textContent = card.cardName;
-                cell2.textContent = card.cardType;
-                cell3.textContent = card.cardLimit;
-                cell4.textContent = card.expiryDate;
-            });
+                // IMPORTANT: cardHolderName, not cardName
+                cell1.textContent = cards[i].cardHolderName;
 
+                cell2.textContent = cards[i].cardType;
+
+                cell3.textContent = cards[i].cardLimit;
+
+                cell4.textContent = cards[i].expiryDate;
+            }
+
+
+            // Add table to webpage
             document.getElementById("tableContainer").appendChild(table);
 
-            // Rendering completed
+            // Display success message
             document.getElementById("message").innerHTML +=
                 "<br>Report generated successfully!!!";
         }
