@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Credit Card Report</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        #message {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Credit Card Details</h2>
+
+    <div id="message"></div>
+    <div id="tableContainer"></div>
+
+    <script>
+        let cards = [];
+
+        // Create AJAX request
+        let xhr = new XMLHttpRequest();
+
+        xhr.open(
+            "GET",
+            "https://webapps.tekstac.com/WebAPI/CreditCardsXMLServlet",
+            true
+        );
+
+        xhr.onreadystatechange = function () {
+
+            // Check ready state and status
+            if (xhr.readyState === 4 && xhr.status === 200) {
+
+                // Parse XML response
+                let xml = xhr.responseXML;
+
+                // Get all credit card elements
+                let cardList = xml.getElementsByTagName("creditcard");
+
+                // Extract data
+                for (let i = 0; i < cardList.length; i++) {
+
+                    let card = cardList[i];
+
+                    let obj = {
+                        cardName: card.getElementsByTagName("cardName")[0].textContent,
+                        cardType: card.getElementsByTagName("cardType")[0].textContent,
+                        cardLimit: card.getElementsByTagName("limit")[0].textContent,
+                        expiryDate: card.getElementsByTagName("expiryDate")[0].textContent
+                    };
+
+                    cards.push(obj);
+                }
+
+                // Check complete dataset
+                if (cards.length === 16) {
+                    document.getElementById("message").innerHTML =
+                        "Data retrieved successfully.";
+                }
+
+                // Generate table
+                generateTable();
+            }
+        };
+
+        xhr.send();
+
+
+        function generateTable() {
+
+            let table = document.createElement("table");
+
+            // Create table header
+            let header = table.insertRow();
+
+            let headers = [
+                "Card Name",
+                "Card Type",
+                "Limit",
+                "Expiry Date"
+            ];
+
+            headers.forEach(function (heading) {
+                let th = document.createElement("th");
+                th.textContent = heading;
+                header.appendChild(th);
+            });
+
+            // Add data rows
+            cards.forEach(function (card) {
+
+                let row = table.insertRow();
+
+                let cell1 = row.insertCell();
+                let cell2 = row.insertCell();
+                let cell3 = row.insertCell();
+                let cell4 = row.insertCell();
+
+                cell1.textContent = card.cardName;
+                cell2.textContent = card.cardType;
+                cell3.textContent = card.cardLimit;
+                cell4.textContent = card.expiryDate;
+            });
+
+            document.getElementById("tableContainer").appendChild(table);
+
+            // Rendering completed
+            document.getElementById("message").innerHTML +=
+                "<br>Report generated successfully!!!";
+        }
+    </script>
+
+</body>
+</html>
