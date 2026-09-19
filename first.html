@@ -54,18 +54,16 @@
                 let xml = xhr.responseXML;
 
                 // Get all credit card elements
-                let cardList = xml.getElementsByTagName("creditcard");
+                let cardList = xml.getElementsByTagName("CreditCard");
 
-                // Extract data
                 for (let i = 0; i < cardList.length; i++) {
-
                     let card = cardList[i];
 
                     let obj = {
-                        cardName: card.getElementsByTagName("cardName")[0].textContent,
-                        cardType: card.getElementsByTagName("cardType")[0].textContent,
-                        cardLimit: card.getElementsByTagName("limit")[0].textContent,
-                        expiryDate: card.getElementsByTagName("expiryDate")[0].textContent
+                        cardHolderName: card.getElementsByTagName("CardHolderName")[0].textContent,
+                        cardType: card.getElementsByTagName("CardType")[0].textContent,
+                        cardLimit: card.getElementsByTagName("CardLimit")[0].textContent,
+                        expiryDate: card.getElementsByTagName("ExpiryDate")[0].textContent
                     };
 
                     cards.push(obj);
