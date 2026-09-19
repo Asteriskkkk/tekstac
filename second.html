@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Score Records</title>
+</head>
+
+<body>
+
+    <h2>Score Records</h2>
+
+    <form id="recordForm">
+        <input type="text" id="name" placeholder="Enter name">
+        <input type="text" id="score" placeholder="Enter score">
+        <button type="submit">Add</button>
+    </form>
+
+    <p id="error"></p>
+
+    <p id="average">Average Score: 0</p>
+
+    <ul id="recordList"></ul>
+
+    <script>
+        let records = [];
+
+        let form = document.getElementById("recordForm");
+        let nameInput = document.getElementById("name");
+        let scoreInput = document.getElementById("score");
+        let error = document.getElementById("error");
+        let recordList = document.getElementById("recordList");
+        let average = document.getElementById("average");
+
+        form.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            error.textContent = "";
+
+            let name = nameInput.value.trim();
+            let score = scoreInput.value.trim();
+
+            // Validate name
+            if (name === "") {
+                error.textContent = "Name cannot be empty";
+                return;
+            }
+
+            // Validate score
+            if (score === "") {
+                error.textContent = "Score cannot be empty";
+                return;
+            }
+
+            let numericScore = Number(score);
+
+            // Validate number
+            if (isNaN(numericScore)) {
+                error.textContent = "Score must be a valid number";
+                return;
+            }
+
+            // Validate negative score
+            if (numericScore < 0) {
+                error.textContent = "Score cannot be negative";
+                return;
+            }
+
+            // Add record to array
+            records.push({
+                name: name,
+                score: numericScore
+            });
+
+            updateDisplay();
+
+            nameInput.value = "";
+            scoreInput.value = "";
+        });
+
+
+        function updateDisplay() {
+
+            // Clear existing list
+            recordList.innerHTML = "";
+
+            // Create list items dynamically
+            records.forEach(function(record, index) {
+
+                let li = document.createElement("li");
+
+                li.textContent = record.name + " - " + record.score;
+
+                // Double-click to delete
+                li.addEventListener("dblclick", function() {
+
+                    // Remove from array first
+                    records.splice(index, 1);
+
+                    // Update list and average
+                    updateDisplay();
+                });
+
+                recordList.appendChild(li);
+            });
+
+
+            // Calculate average
+            let total = 0;
+
+            records.forEach(function(record) {
+                total += record.score;
+            });
+
+            let avg = 0;
+
+            if (records.length > 0) {
+                avg = total / records.length;
+            }
+
+            average.textContent =
+                "Average Score: " + avg.toFixed(2);
+        }
+    </script>
+
+</body>
+</html>
