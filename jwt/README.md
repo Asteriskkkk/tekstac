@@ -30,5 +30,7 @@ curl http://localhost:3000/movies \
   -H 'Authorization: Bearer YOUR_TOKEN'
 ```
 
-Requests without a valid, unexpired Bearer token receive a `403` response
-with `{ "message": "Invalid token" }`.
+Requests without an Authorization header receive a `401` response with
+`{ "message": "No token provided" }`. Requests with a malformed, invalid, or
+expired token receive a `403` response with
+`{ "message": "Invalid token" }`.

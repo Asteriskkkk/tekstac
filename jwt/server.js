@@ -52,7 +52,12 @@ app.post("/login", (req, res) => {
 
 function authenticateToken(req, res, next) {
   const authorization = req.get("Authorization");
-  const [scheme, token] = authorization ? authorization.split(" ") : [];
+
+  if (!authorization) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+
+  const [scheme, token] = authorization.split(" ");
 
   if (scheme !== "Bearer" || !token) {
     return res.status(403).json({ message: "Invalid token" });
